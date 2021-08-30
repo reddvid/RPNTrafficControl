@@ -37,7 +37,6 @@ namespace RPNTrafficControl
             this.label2 = new System.Windows.Forms.Label();
             this.stopTimePicker = new System.Windows.Forms.DateTimePicker();
             this.btnSave = new System.Windows.Forms.Button();
-            this.btnTest = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -96,16 +95,6 @@ namespace RPNTrafficControl
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
-            // btnTest
-            // 
-            this.btnTest.Location = new System.Drawing.Point(12, 108);
-            this.btnTest.Name = "btnTest";
-            this.btnTest.Size = new System.Drawing.Size(134, 23);
-            this.btnTest.TabIndex = 5;
-            this.btnTest.Text = "Test Start";
-            this.btnTest.UseVisualStyleBackColor = true;
-            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
-            // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -121,7 +110,7 @@ namespace RPNTrafficControl
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(219, 17);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(188, 17);
             this.toolStripStatusLabel2.Spring = true;
             // 
             // toolStripStatusLabel1
@@ -140,7 +129,6 @@ namespace RPNTrafficControl
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(328, 167);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.btnTest);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.stopTimePicker);
             this.Controls.Add(this.label2);
@@ -165,9 +153,6 @@ namespace RPNTrafficControl
         private Label label2;
         private DateTimePicker stopTimePicker;
         private Button btnSave;
-#if DEBUG
-        private Button btnTest;
-#endif
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel toolStripStatusLabel1;
         private ToolStripStatusLabel toolStripStatusLabel2;
