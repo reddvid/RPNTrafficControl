@@ -40,6 +40,9 @@ namespace RPNTrafficControl
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.btnTest = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -87,7 +90,7 @@ namespace RPNTrafficControl
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(182, 108);
+            this.btnSave.Location = new System.Drawing.Point(182, 159);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(134, 23);
             this.btnSave.TabIndex = 4;
@@ -100,9 +103,9 @@ namespace RPNTrafficControl
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel2,
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 145);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 196);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(328, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(329, 22);
             this.statusStrip1.SizingGrip = false;
             this.statusStrip1.TabIndex = 7;
             this.statusStrip1.Text = "statusStrip1";
@@ -110,7 +113,7 @@ namespace RPNTrafficControl
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(188, 17);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(220, 17);
             this.toolStripStatusLabel2.Spring = true;
             // 
             // toolStripStatusLabel1
@@ -123,11 +126,40 @@ namespace RPNTrafficControl
             this.toolStripStatusLabel1.VisitedLinkColor = System.Drawing.Color.Red;
             this.toolStripStatusLabel1.Click += new System.EventHandler(this.toolStripStatusLabel1_Click);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 100);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(130, 15);
+            this.label3.TabIndex = 8;
+            this.label3.Text = "OBS Program Location:";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(12, 118);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(304, 23);
+            this.textBox1.TabIndex = 9;
+            // 
+            // btnTest
+            // 
+            this.btnTest.Location = new System.Drawing.Point(12, 159);
+            this.btnTest.Name = "btnTest";
+            this.btnTest.Size = new System.Drawing.Size(134, 23);
+            this.btnTest.TabIndex = 10;
+            this.btnTest.Text = "Test";
+            this.btnTest.UseVisualStyleBackColor = true;
+            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
+            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(328, 167);
+            this.ClientSize = new System.Drawing.Size(329, 218);
+            this.Controls.Add(this.btnTest);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.stopTimePicker);
@@ -156,5 +188,8 @@ namespace RPNTrafficControl
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel toolStripStatusLabel1;
         private ToolStripStatusLabel toolStripStatusLabel2;
+        private Label label3;
+        private TextBox textBox1;
+        private Button btnTest;
     }
 }

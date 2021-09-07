@@ -72,7 +72,7 @@ namespace RPNTrafficControl
                         }
 
                         ProcessStartInfo psi = new ProcessStartInfo();
-                        psi.WorkingDirectory = @"C:\Program Files\obs-studio\bin\64bit\";
+                        psi.WorkingDirectory = Properties.Settings.Default.obsExeLocation.Replace("obs64.exe", string.Empty);
                         psi.FileName = @"obs64.exe";
                         psi.UseShellExecute = true;
                         psi.Arguments = @"--startrecording";

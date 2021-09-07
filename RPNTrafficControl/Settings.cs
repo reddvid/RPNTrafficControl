@@ -19,6 +19,14 @@ namespace RPNTrafficControl
         {
             InitializeComponent();
 
+            opd = new OpenFileDialog();
+            opd.InitialDirectory = @"C:\Program Files\";
+            opd.RestoreDirectory = true;
+            opd.Title = "Browse obs64.exe";
+            opd.FileName = "obs64*";
+            opd.Filter = "obs64 (.exe)|*.exe|All Files (*.*)|*.*";
+            opd.FilterIndex = 1;
+
             this.Load += Settings_Load;
             this.FormClosing += Settings_FormClosing;
         }
@@ -37,7 +45,39 @@ namespace RPNTrafficControl
         private void Settings_Load(object sender, EventArgs e)
         {
             // Load Settings
-            LoadSettings();
+            LoadSettings();           
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            var btn = new Button();
+            btn.Size = new Size(25, textBox1.ClientSize.Height + 2);
+            btn.Location = new Point(textBox1.ClientSize.Width - btn.Width, -1);
+            btn.Cursor = Cursors.Default;
+            btn.Text = "...";
+            btn.Click += btn_Click;
+            textBox1.Controls.Add(btn);
+            // Send EM_SETMARGINS to prevent text from disappearing underneath the button
+            SendMessage(textBox1.Handle, 0xd3, (IntPtr)2, (IntPtr)(btn.Width << 16));
+            base.OnLoad(e);
+        }
+
+
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
+
+        OpenFileDialog opd;
+        private void btn_Click(object sender, EventArgs e)
+        {
+            // Search for obs64.exe
+
+            if (opd.ShowDialog() == DialogResult.OK)
+            {
+                textBox1.Text = opd.FileName;
+                Properties.Settings.Default.obsExeLocation = opd.FileName;
+                Properties.Settings.Default.Save();
+            }
         }
 
         private void LoadSettings()
@@ -48,6 +88,10 @@ namespace RPNTrafficControl
             if (String.IsNullOrWhiteSpace(Properties.Settings.Default.stopTime))
                 Properties.Settings.Default.stopTime = "10:00 pm";
 
+            if (String.IsNullOrWhiteSpace(Properties.Settings.Default.obsExeLocation))
+                Properties.Settings.Default.obsExeLocation = @"C:\Program Files\obs-studio\bin\64bit\obs64.exe";
+
+            this.textBox1.Text = Properties.Settings.Default.obsExeLocation;
             this.startTimePicker.Value = DateTime.Parse(Properties.Settings.Default.startTime);
             this.stopTimePicker.Value = DateTime.Parse(Properties.Settings.Default.stopTime);
 
@@ -81,7 +125,7 @@ namespace RPNTrafficControl
                 }
 
                 ProcessStartInfo psi = new ProcessStartInfo();
-                psi.WorkingDirectory = @"C:\Program Files\obs-studio\bin\64bit\";
+                psi.WorkingDirectory = Properties.Settings.Default.obsExeLocation.Replace("obs64.exe", string.Empty);
                 psi.FileName = @"obs64.exe";
                 psi.UseShellExecute = true;
                 psi.Arguments = @"--startrecording";
@@ -95,7 +139,13 @@ namespace RPNTrafficControl
 
         private void toolStripStatusLabel1_Click(object sender, EventArgs e)
         {
-            Process.Start(@"https://reddavid.me");
+            var ps = new ProcessStartInfo("https://reddavid.me")
+            {
+                UseShellExecute = true,
+                Verb = "open"
+            };
+            Process.Start(ps);
         }
+
     }
 }

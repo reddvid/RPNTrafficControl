@@ -46,5 +46,17 @@ namespace RPNTrafficControl.Properties {
                 this["stopTime"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string obsExeLocation {
+            get {
+                return ((string)(this["obsExeLocation"]));
+            }
+            set {
+                this["obsExeLocation"] = value;
+            }
+        }
     }
 }
