@@ -168,6 +168,10 @@ namespace RPNTrafficControl
                     Text = "RPN Traffic Control"
                 };
 
+                trayIcon.BalloonTipText = "Access the app's settings by right-clicking on the system tray icon";
+                trayIcon.BalloonTipTitle = "RPN Traffic Control is active";
+                trayIcon.ShowBalloonTip(2000);
+
                 trayIcon.MouseDown += TrayIcon_MouseDown;
                 trayIcon.MouseClick += TrayIcon_MouseClick;
             }
