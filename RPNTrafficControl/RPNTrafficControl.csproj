@@ -5,6 +5,12 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <PackageId>RPN Traffic Control</PackageId>
+    <Authors>Red David</Authors>
+    <Company>Red David</Company>
+    <Version>1.1.0</Version>
+    <Product>RPN Traffic Control</Product>
+    <AssemblyName>RPN Traffic Control</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

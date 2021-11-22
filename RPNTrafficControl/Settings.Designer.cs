@@ -43,6 +43,7 @@ namespace RPNTrafficControl
             this.label3 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.btnTest = new System.Windows.Forms.Button();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,7 +51,7 @@ namespace RPNTrafficControl
             // 
             this.startTimePicker.CustomFormat = "hh:mm tt";
             this.startTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.startTimePicker.Location = new System.Drawing.Point(182, 20);
+            this.startTimePicker.Location = new System.Drawing.Point(182, 37);
             this.startTimePicker.Name = "startTimePicker";
             this.startTimePicker.ShowUpDown = true;
             this.startTimePicker.Size = new System.Drawing.Size(134, 23);
@@ -61,7 +62,7 @@ namespace RPNTrafficControl
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 26);
+            this.label1.Location = new System.Drawing.Point(12, 43);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(91, 15);
             this.label1.TabIndex = 1;
@@ -70,7 +71,7 @@ namespace RPNTrafficControl
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 66);
+            this.label2.Location = new System.Drawing.Point(12, 73);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(150, 15);
             this.label2.TabIndex = 2;
@@ -80,7 +81,7 @@ namespace RPNTrafficControl
             // 
             this.stopTimePicker.CustomFormat = "hh:mm tt";
             this.stopTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.stopTimePicker.Location = new System.Drawing.Point(182, 60);
+            this.stopTimePicker.Location = new System.Drawing.Point(182, 67);
             this.stopTimePicker.Name = "stopTimePicker";
             this.stopTimePicker.ShowUpDown = true;
             this.stopTimePicker.Size = new System.Drawing.Size(134, 23);
@@ -152,11 +153,25 @@ namespace RPNTrafficControl
             this.btnTest.UseVisualStyleBackColor = true;
             this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(12, 12);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(100, 19);
+            this.checkBox1.TabIndex = 11;
+            this.checkBox1.Text = "Run at startup";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(329, 218);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.btnTest);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label3);
@@ -191,5 +206,6 @@ namespace RPNTrafficControl
         private Label label3;
         private TextBox textBox1;
         private Button btnTest;
+        private CheckBox checkBox1;
     }
 }
