@@ -25,7 +25,7 @@ namespace RPNTrafficControl.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("03:30 AM")]
         public string startTime {
             get {
                 return ((string)(this["startTime"]));
@@ -37,7 +37,7 @@ namespace RPNTrafficControl.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("10:30 PM")]
         public string stopTime {
             get {
                 return ((string)(this["stopTime"]));

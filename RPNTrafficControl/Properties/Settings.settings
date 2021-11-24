@@ -3,10 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="startTime" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">03:30 AM</Value>
     </Setting>
     <Setting Name="stopTime" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">10:30 PM</Value>
     </Setting>
     <Setting Name="obsExeLocation" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
