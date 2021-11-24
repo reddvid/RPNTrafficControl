@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,17 +23,17 @@ namespace RPNTrafficControl
             bool createdNew = true;
             using (Mutex mutex = new Mutex(true, "TrafficControl", out createdNew))
             {
-                    if (createdNew)
-                    {
-                        Application.EnableVisualStyles();
-                        Application.SetCompatibleTextRenderingDefault(false);
+                if (createdNew)
+                {
+                    Application.EnableVisualStyles();
+                    Application.SetCompatibleTextRenderingDefault(false);
 
-                        Application.Run(new MyCustomApplicationContext());
-                    }
-                    else
-                    {
-                        MessageBox.Show("RPN Traffic Control is already running and silently lives on the taskbar notification area.", "RPN Traffic Control", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
+                    Application.Run(new MyCustomApplicationContext());
+                }
+                else
+                {
+                    MessageBox.Show("RPN Traffic Control is already running and silently lives on the taskbar notification area.", "RPN Traffic Control", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
         }
 
@@ -60,7 +61,7 @@ namespace RPNTrafficControl
             {
                 Debug.WriteLine(DateTime.Now.ToString("hh:mm tt"));
                 Debug.WriteLine(Properties.Settings.Default.startTime);
-                
+
                 if (DateTime.Now.ToString("hh:mm tt") == Properties.Settings.Default.startTime) // Start
                 {
                     try
@@ -112,13 +113,14 @@ namespace RPNTrafficControl
             private Settings s = new Settings();
 
             private System.Windows.Forms.Timer doubleClickTimer = new System.Windows.Forms.Timer();
+            private static readonly string StartupKey = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+            private static readonly string StartupValue = "RPN Traffic Control";
 
             public MyCustomApplicationContext()
             {
 #if DEBUG
                 s.Show();
 #endif
-
                 InitTimer();
 
                 doubleClickTimer.Interval = 100;
@@ -174,6 +176,68 @@ namespace RPNTrafficControl
 
                 trayIcon.MouseDown += TrayIcon_MouseDown;
                 trayIcon.MouseClick += TrayIcon_MouseClick;
+
+                EnableRunAtStartup();
+
+                try
+                {
+                    RunObs();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Running OBS failed: " + ex.Message);
+                }
+            }
+
+            private void EnableRunAtStartup()
+            {
+                RegistryKey key = Registry.CurrentUser.OpenSubKey(StartupKey, true);
+                key.SetValue(StartupValue, Application.ExecutablePath.ToString());
+                key.Close();
+            }
+
+            private void RunObs()
+            {
+                if (IsItWithinTheTime())
+                {
+                    try
+                    {
+                        Process[] obs = Process.GetProcessesByName("obs64");
+                        if (obs.Length != 0)
+                        {
+                            obs[0].Kill();
+                        }
+
+                        ProcessStartInfo psi = new ProcessStartInfo();
+                        psi.WorkingDirectory = Properties.Settings.Default.obsExeLocation.Replace("obs64.exe", string.Empty);
+                        psi.FileName = @"obs64.exe";
+                        psi.UseShellExecute = true;
+                        psi.Arguments = @"--startrecording";
+                        Process.Start(psi);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error", ex.Message, MessageBoxButtons.OK);
+                    }
+                }
+            }
+
+            private bool IsItWithinTheTime()
+            {
+                // Compare properties with saved time properties
+                bool timeIsInRange = false;
+                var startTime = Properties.Settings.Default.startTime;
+                var endTime = Properties.Settings.Default.stopTime;
+
+                DateTime start = DateTime.ParseExact(startTime, "hh:mm tt", CultureInfo.InvariantCulture);
+                DateTime end = DateTime.ParseExact(endTime, "hh:mm tt", CultureInfo.InvariantCulture);
+                DateTime now = DateTime.Now;
+
+                if ((now > start) && (now < end))
+                {
+                    timeIsInRange = true;
+                }
+                return timeIsInRange;
             }
 
             private async void CustomizeContextMenuBackground()
@@ -295,7 +359,7 @@ namespace RPNTrafficControl
                         if (isDoubleClick)
                         {
                             // Perform Double Click
-                           s.Show();
+                            s.Show();
                         }
 
                         // Allow the MouseDown event handler to process clicks again.
@@ -304,7 +368,7 @@ namespace RPNTrafficControl
                         milliseconds = 0;
                     }
 
-                   
+
                 }
                 catch (Exception) { }
             }

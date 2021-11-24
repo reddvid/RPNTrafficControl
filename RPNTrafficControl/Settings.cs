@@ -16,9 +16,7 @@ namespace RPNTrafficControl
     public partial class Settings : Form
     {
         //Startup registry key and value
-        private static readonly string StartupKey = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
-        private static readonly string StartupValue = "RPN Traffic Control";
-
+       
         public Settings()
         {
             InitializeComponent();
@@ -153,18 +151,6 @@ namespace RPNTrafficControl
         {
             Properties.Settings.Default.Save();
             this.Hide();
-
-            RegistryKey key = Registry.CurrentUser.OpenSubKey(StartupKey, true);
-            if (checkBox1.Checked)
-            {
-                key.SetValue(StartupValue, Application.ExecutablePath.ToString());
-            }
-            else
-            {
-                key.DeleteValue(StartupValue, false);
-            }
-
-            key.Close();
         }
 
         private void stopTimePicker_ValueChanged(object sender, EventArgs e)
@@ -208,8 +194,6 @@ namespace RPNTrafficControl
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.runAtStart = checkBox1.Checked;
-
-
         }
     }
 }
