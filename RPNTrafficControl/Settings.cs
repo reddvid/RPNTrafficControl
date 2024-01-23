@@ -1,4 +1,7 @@
 ﻿using Microsoft.Win32;
+using OBSWebsocketDotNet;
+using OBSWebsocketDotNet.Types;
+using OBSWebsocketDotNet.Types.Events;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,16 +11,18 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 
 namespace RPNTrafficControl
 {
     public partial class Settings : Form
     {
         //Startup registry key and value
-       
-        public Settings()
+        OBSWebsocket _obs;
+        public Settings(OBSWebsocket obs)
         {
             InitializeComponent();
 
@@ -31,6 +36,8 @@ namespace RPNTrafficControl
 
             this.Load += Settings_Load;
             this.FormClosing += Settings_FormClosing;
+
+            _obs = obs;
         }
 
         private void Settings_FormClosing(object sender, FormClosingEventArgs e)
@@ -44,10 +51,104 @@ namespace RPNTrafficControl
             //throw new NotImplementedException();
         }
 
-        private void Settings_Load(object sender, EventArgs e)
+
+        private async void Settings_Load(object sender, EventArgs e)
         {
+
             // Load Settings
             LoadSettings();
+            Application.ThreadException += Application_ThreadException;
+
+            // Add the event handler for handling non-UI thread exceptions to the event. 
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+            await Task.Delay(5000);
+            EnsureWebSocketConnection();
+        }
+
+        private void onConnect(object sender, EventArgs e)
+        {
+            BeginInvoke((MethodInvoker)(() =>
+            {
+                var versionInfo = _obs.GetVersion();
+
+                var streamStatus = _obs.GetStreamStatus();
+
+                var recordStatus = _obs.GetRecordStatus();
+            }));
+        }
+
+        private void onRecordStateChanged(object sender, RecordStateChangedEventArgs args)
+        {
+            string state = "";
+            switch (args.OutputState.State)
+            {
+                case OutputState.OBS_WEBSOCKET_OUTPUT_STARTING:
+                    state = "Recording starting...";
+                    break;
+
+                case OutputState.OBS_WEBSOCKET_OUTPUT_STARTED:
+                case OutputState.OBS_WEBSOCKET_OUTPUT_RESUMED:
+                    state = "Stop recording";
+                    break;
+
+                case OutputState.OBS_WEBSOCKET_OUTPUT_STOPPING:
+                    state = "Recording stopping...";
+                    break;
+
+                case OutputState.OBS_WEBSOCKET_OUTPUT_STOPPED:
+                    state = "Start recording";
+                    break;
+                case OutputState.OBS_WEBSOCKET_OUTPUT_PAUSED:
+                    state = "(P) Stop recording";
+                    break;
+
+                default:
+                    state = "State unknown";
+                    break;
+            }
+
+
+        }
+        private void onDisconnect(object sender, OBSWebsocketDotNet.Communication.ObsDisconnectionInfo e)
+        {
+            BeginInvoke((MethodInvoker)(() =>
+            {
+                if (e.ObsCloseCode == OBSWebsocketDotNet.Communication.ObsCloseCodes.AuthenticationFailed)
+                {
+                    MessageBox.Show("Authentication failed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+                else if (e.WebsocketDisconnectionInfo != null)
+                {
+                    if (e.WebsocketDisconnectionInfo.Exception != null)
+                    {
+                        MessageBox.Show($"Connection failed: CloseCode: {e.ObsCloseCode} Desc: {e.WebsocketDisconnectionInfo?.CloseStatusDescription} Exception:{e.WebsocketDisconnectionInfo?.Exception?.Message}\nType: {e.WebsocketDisconnectionInfo.Type}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Connection failed: CloseCode: {e.ObsCloseCode} Desc: {e.WebsocketDisconnectionInfo?.CloseStatusDescription}\nType: {e.WebsocketDisconnectionInfo.Type}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show($"Connection failed: CloseCode: {e.ObsCloseCode}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+            }));
+
+            // Try reconnecting
+            EnsureWebSocketConnection();
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show($"{((Exception)e.ExceptionObject).Message}", "Unhandled Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        }
+
+        private void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            MessageBox.Show($"{((Exception)e.Exception).Message}", "Unhandled Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
         public static bool ExistsOnPath(string fileName)
@@ -110,7 +211,7 @@ namespace RPNTrafficControl
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
 
-        OpenFileDialog opd;
+        System.Windows.Forms.OpenFileDialog opd;
         private void btn_Click(object sender, EventArgs e)
         {
             // Search for obs64.exe
@@ -150,13 +251,14 @@ namespace RPNTrafficControl
         private void btnSave_Click(object sender, EventArgs e)
         {
             Properties.Settings.Default.Save();
-            this.Hide();
         }
 
         private void stopTimePicker_ValueChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.stopTime = stopTimePicker.Value.ToString("hh:mm tt");
         }
+
+        protected bool IsObsConnected;
 
         private void btnTest_Click(object sender, EventArgs e)
         {
@@ -165,20 +267,55 @@ namespace RPNTrafficControl
                 Process[] obs = Process.GetProcessesByName("obs64");
                 if (obs.Length != 0)
                 {
-                    obs[0].Kill();
-                }
+                    // Turn off recording
 
-                ProcessStartInfo psi = new ProcessStartInfo();
-                psi.WorkingDirectory = Properties.Settings.Default.obsExeLocation.Replace("obs64.exe", string.Empty);
-                psi.FileName = @"obs64.exe";
-                psi.UseShellExecute = true;
-                psi.Arguments = @"--startrecording";
-                Process.Start(psi);
+                    if (this._obs.IsConnected)
+                    {
+                        this._obs.StopRecord();
+                        // obs[0].Kill();
+                    }
+                    else
+                    {
+                        ProcessStartInfo psi = new ProcessStartInfo();
+                        psi.WorkingDirectory = Properties.Settings.Default.obsExeLocation.Replace("obs64.exe", string.Empty);
+                        psi.FileName = @"obs64.exe";
+                        psi.UseShellExecute = true;
+                        psi.Arguments = @"--disable-shutdown-check --startrecording ";
+                        Process.Start(psi);
+                    }
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error", ex.Message, MessageBoxButtons.OK);
             }
+        }
+
+        private void EnsureWebSocketConnection()
+        {
+            // Password jf2EywIrTpatEoJc 192.168.254.162 4455
+
+            if (!this._obs.IsConnected)
+            {
+                System.Threading.Tasks.Task.Run(() =>
+                {
+                    try
+                    {
+                        this._obs.ConnectAsync("ws://192.168.254.162:4455", "jf2EywIrTpatEoJc");
+                    }
+                    catch (Exception ex)
+                    {
+                        BeginInvoke((MethodInvoker)delegate
+                        {
+                            MessageBox.Show("Connect failed : " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            return;
+                        });
+                    }
+                });
+            }
+
+            _obs.Connected += onConnect;
+            _obs.Disconnected += onDisconnect;
         }
 
         private void toolStripStatusLabel1_Click(object sender, EventArgs e)

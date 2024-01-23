@@ -1,4 +1,5 @@
 using Microsoft.Win32;
+using OBSWebsocketDotNet;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,12 +15,14 @@ namespace RPNTrafficControl
 {
     static class Program
     {
+
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             bool createdNew = true;
             using (Mutex mutex = new Mutex(true, "TrafficControl", out createdNew))
             {
@@ -40,6 +43,7 @@ namespace RPNTrafficControl
         public class MyCustomApplicationContext : ApplicationContext
         {
             static System.Timers.Timer t;
+            protected static OBSWebsocket _obs = new OBSWebsocket();
 
             private void InitTimer()
             {
@@ -57,6 +61,7 @@ namespace RPNTrafficControl
                 return ((60 - now.Second) * 1000 - now.Millisecond);
             }
 
+
             static void t_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
             {
                 Debug.WriteLine(DateTime.Now.ToString("hh:mm tt"));
@@ -66,18 +71,30 @@ namespace RPNTrafficControl
                 {
                     try
                     {
-                        Process[] obs = Process.GetProcessesByName("obs64");
-                        if (obs.Length != 0)
+                        if (_obs.IsConnected)
                         {
-                            obs[0].Kill();
+                            _obs.StartRecord();
                         }
+                        else
+                        {
+                            // Do the old method
+                            // TODO: Figure out to reconnect websocket when app is open but is disconnected
 
-                        ProcessStartInfo psi = new ProcessStartInfo();
-                        psi.WorkingDirectory = Properties.Settings.Default.obsExeLocation.Replace("obs64.exe", string.Empty);
-                        psi.FileName = @"obs64.exe";
-                        psi.UseShellExecute = true;
-                        psi.Arguments = @"--startrecording";
-                        Process.Start(psi);
+                            Process[] obs = Process.GetProcessesByName("obs64");
+                            if (obs.Length != 0)
+                            {
+                                // Had to Kill on Start
+                                obs[0].Kill();
+                            }
+
+                            // Disable Startup Check
+                            ProcessStartInfo psi = new ProcessStartInfo();
+                            psi.WorkingDirectory = Properties.Settings.Default.obsExeLocation.Replace("obs64.exe", string.Empty);
+                            psi.FileName = @"obs64.exe";
+                            psi.UseShellExecute = true;
+                            psi.Arguments = @"--disable-shutdown-check --startrecording";
+                            Process.Start(psi);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -92,7 +109,8 @@ namespace RPNTrafficControl
                         Process[] obs = Process.GetProcessesByName("obs64");
                         if (obs.Length != 0)
                         {
-                            obs[0].Kill();
+                            _obs.StopRecord();
+                            // obs[0].Kill();
                         }
                     }
                     catch (Exception ex)
@@ -110,7 +128,7 @@ namespace RPNTrafficControl
             private ToolStripMenuItem toolStripSettings = new ToolStripMenuItem();
             private ToolStripMenuItem toolStripQuit = new ToolStripMenuItem();
 
-            private Settings s = new Settings();
+            private Settings s = new Settings(_obs);
 
             private System.Windows.Forms.Timer doubleClickTimer = new System.Windows.Forms.Timer();
             private static readonly string StartupKey = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
@@ -202,18 +220,25 @@ namespace RPNTrafficControl
                 {
                     try
                     {
-                        Process[] obs = Process.GetProcessesByName("obs64");
-                        if (obs.Length != 0)
+                        if (_obs.IsConnected)
                         {
-                            obs[0].Kill();
+                            _obs.StartRecord();
                         }
+                        else
+                        {
+                            Process[] obs = Process.GetProcessesByName("obs64");
+                            if (obs.Length != 0)
+                            {
+                                obs[0].Kill();
+                            }
 
-                        ProcessStartInfo psi = new ProcessStartInfo();
-                        psi.WorkingDirectory = Properties.Settings.Default.obsExeLocation.Replace("obs64.exe", string.Empty);
-                        psi.FileName = @"obs64.exe";
-                        psi.UseShellExecute = true;
-                        psi.Arguments = @"--startrecording";
-                        Process.Start(psi);
+                            ProcessStartInfo psi = new ProcessStartInfo();
+                            psi.WorkingDirectory = Properties.Settings.Default.obsExeLocation.Replace("obs64.exe", string.Empty);
+                            psi.FileName = @"obs64.exe";
+                            psi.UseShellExecute = true;
+                            psi.Arguments = @"--disable-shutdown-check --startrecording";
+                            Process.Start(psi);
+                        }
                     }
                     catch (Exception ex)
                     {
