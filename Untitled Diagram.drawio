@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-01-24T07:02:07.040Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0" etag="rMCdfeD9LP1r8Ac6HngR" version="23.0.0" type="github">
+<mxfile host="app.diagrams.net" modified="2024-01-24T07:05:15.369Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0" etag="xHMBJaOEVtHbuj2P_9-q" version="23.0.0" type="github">
   <diagram name="Page-1" id="2YBvvXClWsGukQMizWep">
     <mxGraphModel dx="1379" dy="756" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
       <root>
@@ -118,8 +118,8 @@
         <mxCell id="jEiSINPsbxnK8EgtZKj--43" value="Is Start?" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="530" y="340" width="70" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="jEiSINPsbxnK8EgtZKj--45" value="Stop the recording" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="710" y="520" width="120" height="60" as="geometry" />
+        <mxCell id="jEiSINPsbxnK8EgtZKj--45" value="Stop recording" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="520" width="140" height="60" as="geometry" />
         </mxCell>
         <mxCell id="jEiSINPsbxnK8EgtZKj--54" value="No" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="530" y="580" width="35" height="30" as="geometry" />
@@ -145,8 +145,8 @@
         <mxCell id="jEiSINPsbxnK8EgtZKj--74" value="No" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="532.5" y="400" width="35" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="jEiSINPsbxnK8EgtZKj--75" value="Start the recording" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="920" y="430" width="120" height="60" as="geometry" />
+        <mxCell id="jEiSINPsbxnK8EgtZKj--75" value="Start/Keep recording" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="920" y="430" width="130" height="60" as="geometry" />
         </mxCell>
         <mxCell id="jEiSINPsbxnK8EgtZKj--80" value="Yes" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="840" y="436.25" width="40" height="30" as="geometry" />
