@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using OBSWebsocketDotNet;
+using OBSWebsocketDotNet.Types;
 using RPNTrafficControl.Extensions;
 using RPNTrafficControl.Renderers;
 using System;
@@ -27,8 +28,8 @@ namespace RPNTrafficControl.Context
         private const int VERTICAL_PADDING = 4;
 
         protected static System.Timers.Timer _timer;
-       
-        private OBSContext _obs;
+
+        private OBSWebsocket _obs;
 
         private NotifyIcon _trayIcon;
         private ContextMenuStrip _contextMenuStrip;
@@ -43,9 +44,9 @@ namespace RPNTrafficControl.Context
 
         public ControllerContext()
         {
-            _settingsPage = new SettingsPage();
+            _obs = new OBSWebsocket();
 
-            _obs = new OBSContext(_settingsPage);
+            _settingsPage = new SettingsPage(_obs);
 
             _settingsPage.Show();
 
@@ -64,6 +65,8 @@ namespace RPNTrafficControl.Context
             InitializeNotifyTrayIcon();
 
             EnableRunAtStartup();
+
+            _settingsPage.DoControlOBS();
         }
 
         private void ValidateOBSApp()
@@ -105,38 +108,14 @@ namespace RPNTrafficControl.Context
             Console.WriteLine(DateTime.Now.ToString("hh:mm tt"));
             Console.WriteLine(Properties.Settings.Default.StartTime);
 
-            var timeNow = DateTime.Now.ToString("hh:mm tt");
-
             if (!IsOBSRunning())
             {
                 OpenOBSStudio();
 
-                await Task.Delay(5_000); // Wait for OBS to run/initialize
+                await Task.Delay(3_000); // Wait for OBS to run/initialize
             }
 
-            await Task.Delay(1_500);
-            _obs.EnsureWebsocketConnection();
-
-            try
-            {
-                if (timeNow == Properties.Settings.Default.StartTime)
-                {
-
-                }
-                else if (timeNow == Properties.Settings.Default.StopTime)
-                {
-
-                }
-                else if (IsCurrentTimeWithinOperation())
-                {
-
-
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            _settingsPage.DoControlOBS();
 
             _timer.Interval = Interval;
             _timer.Start();
@@ -152,22 +131,7 @@ namespace RPNTrafficControl.Context
             Process.Start(psi);
         }
 
-        private bool IsCurrentTimeWithinOperation()
-        {
-            var startTime = Properties.Settings.Default.StartTime;
-            var stopTime = Properties.Settings.Default.StopTime;
 
-            DateTime start = DateTime.ParseExact(startTime, "hh:mm tt", CultureInfo.InvariantCulture);
-            DateTime stop = DateTime.ParseExact(stopTime, "hh:mm tt", CultureInfo.InvariantCulture);
-            DateTime now = DateTime.Now;
-
-            if ((now > start) && (now < stop))
-            {
-                return true;
-            }
-
-            return false;
-        }
 
         private void InitializeDoubleClickTimer()
         {
