@@ -12,7 +12,7 @@ namespace RPNTrafficControl.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.0.3.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.8.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -26,48 +26,48 @@ namespace RPNTrafficControl.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("03:30 AM")]
-        public string startTime {
+        public string StartTime {
             get {
-                return ((string)(this["startTime"]));
+                return ((string)(this["StartTime"]));
             }
             set {
-                this["startTime"] = value;
+                this["StartTime"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("10:30 PM")]
-        public string stopTime {
+        public string StopTime {
             get {
-                return ((string)(this["stopTime"]));
+                return ((string)(this["StopTime"]));
             }
             set {
-                this["stopTime"] = value;
+                this["StopTime"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string obsExeLocation {
+        public string OBSExeLocation {
             get {
-                return ((string)(this["obsExeLocation"]));
+                return ((string)(this["OBSExeLocation"]));
             }
             set {
-                this["obsExeLocation"] = value;
+                this["OBSExeLocation"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool runAtStart {
+        public bool IsStartupEnabled {
             get {
-                return ((bool)(this["runAtStart"]));
+                return ((bool)(this["IsStartupEnabled"]));
             }
             set {
-                this["runAtStart"] = value;
+                this["IsStartupEnabled"] = value;
             }
         }
     }
